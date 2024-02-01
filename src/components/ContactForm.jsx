@@ -1,73 +1,67 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import css from './phonebook.module.css';
 import PropTypes from 'prop-types';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+function ContactForm({ handleSubmit }) {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  handleFormSubmit = event => {
+  const handleFormSubmit = event => {
     event.preventDefault();
 
     const { name, number } = this.state;
 
     //przekazuję dane do App.jsx (komponentu nadrzędnego)
-    this.props.handleSubmit({ name, number });
+    handleSubmit({ name, number });
 
     //reset state'u komponentu ContactForm
-    this.setState({ name: '', number: '' });
+    setName('');
+    setNumber('');
   };
 
-  handleChange = event => {
-    this.setState({
-      [event.target.name]: event.target.value, //name w tym przypadku to atrybut, a nie wartość
-    });
+  const handleChange = event => {
+    //destrukturyzuję właściwości obiektu event.target, aby uzyskać dostęp do name (nazwa pola) oraz value (wartość wprowadzona przez użytkownika w polu formularza), które są przesyłane przez zdarzenie onChange
+    const { name, value } = event.target;
+    if (name === 'name') {
+      setName(value);
+    } else if (name === 'number') {
+      setNumber(value);
+    }
   };
-  // [event.target.name] - klucz dynamiczny
-  //event.target.value pobiera aktualną wartość wprowadzoną przez użytkownika w polu wejściowym
 
-  render() {
-    const { name, number } = this.props;
-
-    return (
-      <div>
-        <form
-          className={css['form-container']}
-          onSubmit={this.handleFormSubmit}
-        >
-          <p>Name:</p>
-          <label>
-            <input
-              type="text"
-              name="name"
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-              required
-              value={name}
-              onChange={this.handleChange}
-            />
-          </label>
-          <p>Number:</p>
-          <label>
-            <input
-              type="tel"
-              name="number"
-              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-              required
-              value={number}
-              onChange={this.handleChange}
-            />
-          </label>
-          <button className={css['submit-button']} type="submit" method="POST">
-            Add contact
-          </button>
-        </form>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <form className={css['form-container']} onSubmit={handleFormSubmit}>
+        <p>Name:</p>
+        <label>
+          <input
+            type="text"
+            name="name"
+            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+            required
+            value={name}
+            onChange={handleChange}
+          />
+        </label>
+        <p>Number:</p>
+        <label>
+          <input
+            type="tel"
+            name="number"
+            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+            required
+            value={number}
+            onChange={handleChange}
+          />
+        </label>
+        <button className={css['submit-button']} type="submit" method="POST">
+          Add contact
+        </button>
+      </form>
+    </div>
+  );
 }
 
 ContactForm.propTypes = {
