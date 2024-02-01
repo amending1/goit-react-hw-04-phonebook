@@ -9,8 +9,6 @@ function ContactForm({ handleSubmit }) {
   const handleFormSubmit = event => {
     event.preventDefault();
 
-    const { name, number } = this.state;
-
     //przekazuję dane do App.jsx (komponentu nadrzędnego)
     handleSubmit({ name, number });
 
